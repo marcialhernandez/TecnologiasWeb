@@ -20,14 +20,14 @@ public class parseJSONFile{
     };
 
     JSONArray obtieneDocumentos(String jsonFilePath){
-        System.out.println("obteniendo Datos");
+        System.out.println("obteniendo Datos de "+ jsonFilePath);
         InputStream jsonFile =  getClass().getResourceAsStream(jsonFilePath);
         Reader readerJson = new InputStreamReader(jsonFile);
         //Parse the json file using simple-json library
-        System.out.println("Parseando Jsons");
+        System.out.println("Parseando Jsons de "+jsonFilePath);
         Object fileObjects= JSONValue.parse(readerJson);
         JSONArray arrayObjects=(JSONArray)fileObjects;
-        System.out.println("Parseo completado");
+        System.out.println("Parseo completado de "+jsonFilePath);
         return arrayObjects;
     };
 

@@ -1,3 +1,4 @@
+import os
 '''
 Created on 15-04-2015
 
@@ -6,6 +7,17 @@ Created on 15-04-2015
 
 import gzip
 import json as simplejson
+
+def CrearDirectorio(rutaNuevoDirectorio):
+    try:
+        os.makedirs(rutaNuevoDirectorio)
+    except OSError:
+        if os.path.exists(rutaNuevoDirectorio):
+            pass
+        # We are nearly safe
+        else:
+        # There was an error on creation, so make sure we know about it
+            raise
 
 def parse(filename):
     f = gzip.open(filename, 'r')
@@ -24,16 +36,30 @@ def parse(filename):
     yield entry
 
 if __name__ == '__main__':
-    contador=0
-    f = open("jsonFile.txt","w")
+    #limites
+    cantidadJsonsPorArchivo=1000
+    cantidadArchivosACrear=10
+    ##########################
+    contadorArchivosDiferentes=0
+    contadorLectura=0
+    CrearDirectorio("bd")
+    f = open("bd/jsonFile"+str(contadorArchivosDiferentes)+".txt","w")
     for e in parse("Movies_&_TV.txt.gz"):
-        if contador==0:
+        if contadorLectura==0:
             f.write("[\n")
-        #print simplejson.dumps(e, sort_keys=True,indent=4, separators=(',', ': '))
+            
         f.write(simplejson.dumps(e , sort_keys=True,indent=4, separators=(',', ': ')))
-        if contador==500000:
-            f.write("\n]")
-            print "listo!!"
-            break
         f.write(",\n")
-        contador+=1
+        contadorLectura+=1
+        
+        if contadorLectura==cantidadJsonsPorArchivo:
+            contadorLectura=0
+            f.write("]")
+            
+            print "archivo numero "+str(contadorArchivosDiferentes)+" Listo!!"
+            contadorArchivosDiferentes+=1
+            f.close()
+            if contadorArchivosDiferentes==cantidadArchivosACrear:
+                break
+            else:
+                f = open("bd/jsonFile"+str(contadorArchivosDiferentes)+".txt","w")

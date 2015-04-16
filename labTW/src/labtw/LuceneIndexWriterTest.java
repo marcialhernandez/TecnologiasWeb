@@ -33,7 +33,6 @@ import static sun.nio.cs.Surrogate.is;
 public class LuceneIndexWriterTest {
     
     Path ubicacionIndex;
-    //static final String JSON_FILE_PATH = "/test.json";
 
     public LuceneIndexWriterTest(Path ubicacionIndex) {
         this.ubicacionIndex=ubicacionIndex;
@@ -49,15 +48,15 @@ public class LuceneIndexWriterTest {
             System.out.println("Verificando existencia de indice");
             Directory indexDirectory = FSDirectory.open(this.ubicacionIndex);
             IndexReader indexReader = DirectoryReader.open(indexDirectory);
-            System.out.println("Verificando cantidad de documentos almacenados");
             int numDocs = indexReader.numDocs();
+            System.out.println("Cantidad de documentos almacenados: "+numDocs);
             //assertEquals(numDocs, 3);
-            System.out.println("Imprimiendo documentos almacenados");
+            /*System.out.println("Imprimiendo documentos almacenados");
             for ( int i = 0; i < numDocs; i++)
             {
                 Document document = indexReader.document( i);
-                System.out.println( "d=" +document);
-            }
+                System.out.println( "d=" +document.toString());
+            }*/
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -73,12 +72,19 @@ public class LuceneIndexWriterTest {
         //indexSearcher.//setDefaultFieldSortScoring(true, true);
         System.out.println("Verificando querys");
         
-        //Palabra a buscar
-        String textoSearch = "id2";
+        //Palabra a buscar ->Para archivo text.txt
+        //String textoSearch = "id2";
+
+        //Palabra a buscar ->Para BD
+        String textoSearch = "Sea";
         
-        //En este atributo 
-        String enAtributo = "name";
+        //En este atributo ->Para archivo text.txt
+        //String enAtributo = "name";
         
+        //En este atributo ->Para BD
+        String enAtributo = "product/title";
+        //String enAtributo = "product/title";
+
         //Creamos la consulta 
         QueryParser parser = new QueryParser(enAtributo, new StandardAnalyzer());
         Query query = parser.parse(textoSearch);
@@ -89,7 +95,7 @@ public class LuceneIndexWriterTest {
         ScoreDoc[] filterScoreDosArray = topBusqueda.scoreDocs;
         
         if (filterScoreDosArray.length ==0){
-            System.out.println("Verificando existencia de indice");
+            System.out.println("No existe el termino buscado");
         }
         
         int docId =0;
