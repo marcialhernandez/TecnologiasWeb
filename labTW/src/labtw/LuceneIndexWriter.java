@@ -16,12 +16,14 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Set;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.core.StopAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.DoubleField;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.LongField;
 import org.apache.lucene.document.StringField;
+import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
@@ -54,7 +56,7 @@ public class LuceneIndexWriter {
             //Path file = Paths.get("src/",this.indexPath);
             System.out.println("Creando indice a partir de: "+this.jsonFilePath);
             Directory dir = FSDirectory.open(this.file);
-            Analyzer analyzer = new StandardAnalyzer();
+            Analyzer analyzer = new StopAnalyzer();
             IndexWriterConfig iwc = new IndexWriterConfig(analyzer);
             
             //Verifico si ya existe un indice invertido creado
@@ -90,16 +92,17 @@ public class LuceneIndexWriter {
             Document doc = new Document();
             contador++;
             for(String field : (Set<String>) object.keySet()){
-                Class type = object.get(field).getClass();
-                if(type.equals(String.class)){
-                    doc.add(new StringField(field, (String)object.get(field), Field.Store.YES));
-                }else if(type.equals(Long.class)){
-                    //(Long) not (long). Primitives are not castable to Objects
-                    doc.add(new LongField(field, (Long)object.get(field), Field.Store.YES));
-                }else if(type.equals(Double.class)){
-                    doc.add(new DoubleField(field, (Double)object.get(field), Field.Store.YES));
-                }else if(type.equals(Boolean.class)){
-                    doc.add(new StringField(field, object.get(field).toString(), Field.Store.YES));
+                if(field.equals("product/title")||field.equals("review/summary")||field.equals("review/text")){
+//                Class type = object.get(field).getClass();
+//                if(type.equals(String.class)){
+//                    doc.add(new StringField(field, (String)object.get(field), Field.Store.YES));
+//                }else if(type.equals(Long.class)){
+//                    //(Long) not (long). Primitives are not castable to Objects
+//                    doc.add(new LongField(field, (Long)object.get(field), Field.Store.YES));
+//                }else if(type.equals(Double.class)){
+//                    doc.add(new DoubleField(field, (Double)object.get(field), Field.Store.YES));
+//                }else if(type.equals(Boolean.class)){
+                    doc.add(new TextField(field, object.get(field).toString(), Field.Store.YES));
                 }
             }
             try {

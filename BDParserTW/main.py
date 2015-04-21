@@ -37,8 +37,8 @@ def parse(filename):
 
 if __name__ == '__main__':
     #limites
-    cantidadJsonsPorArchivo=1000
-    cantidadArchivosACrear=10
+    cantidadJsonsPorArchivo=5000
+    cantidadArchivosACrear=20
     ##########################
     contadorArchivosDiferentes=0
     contadorLectura=0

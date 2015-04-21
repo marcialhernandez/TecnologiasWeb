@@ -59,7 +59,7 @@ public class Main {
         //Test
         LuceneIndexWriterTest indexTest= new LuceneIndexWriterTest(index.file);
         indexTest.testWriteIndex();
-        //indexTest.testQueryLucene();
+        indexTest.testQueryLucene();
     }
 
 }

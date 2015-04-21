@@ -51,12 +51,15 @@ public class LuceneIndexWriterTest {
             int numDocs = indexReader.numDocs();
             System.out.println("Cantidad de documentos almacenados: "+numDocs);
             //assertEquals(numDocs, 3);
-            /*System.out.println("Imprimiendo documentos almacenados");
+            System.out.println("Imprimiendo documentos almacenados\n");
             for ( int i = 0; i < numDocs; i++)
             {
                 Document document = indexReader.document( i);
-                System.out.println( "d=" +document.toString());
-            }*/
+                System.out.println( (i) +".- "+document.getField("product/title").toString());
+                System.out.println( document.getField("review/summary").toString());
+                System.out.println( document.getField("review/text").toString());
+                System.out.println( "*******************************************************************************");
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -101,7 +104,8 @@ public class LuceneIndexWriterTest {
         int docId =0;
         for (int i = 0; i < filterScoreDosArray.length; ++i) {
             docId = filterScoreDosArray[i].doc;
-            System.out.println((i + 1) + ". idDoc: "+docId +" Score: "+ filterScoreDosArray[i].score);
+            Document document = indexReader.document( docId);
+            System.out.println((i + 1) + ".- idDoc: "+docId +" <"+ document.getField("product/title").toString().split(":")[1] +" Score: "+ filterScoreDosArray[i].score);
         }
         
         //Term t = new Term(enAtributo, textoSearch);
