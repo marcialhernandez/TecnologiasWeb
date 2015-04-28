@@ -56,8 +56,10 @@ public class LuceneIndexWriterTest {
             {
                 Document document = indexReader.document( i);
                 System.out.println( (i) +".- "+document.getField("product/title").toString());
+                System.out.println( document.getField("product/price").toString());
                 System.out.println( document.getField("review/summary").toString());
                 System.out.println( document.getField("review/text").toString());
+                System.out.println( document.getField("review/score").toString());
                 System.out.println( "*******************************************************************************");
             }
 

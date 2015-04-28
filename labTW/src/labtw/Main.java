@@ -56,6 +56,9 @@ public class Main {
                 //Para cada documento
                 entradaBD = new parseJSONFile();
                 documentos = new JSONArray(); 
+                //Se usa esta forma para ignorar un documento dentro de la carpeta bd
+                if (child.getName().equals(".DS_Store")){
+                continue;}
                 documentos = entradaBD.obtieneDocumentos("/bd/"+child.getName());
                 index = new LuceneIndexWriter(nombreDirSalida,child.getName());
                 index.openIndex(banderaCrear);

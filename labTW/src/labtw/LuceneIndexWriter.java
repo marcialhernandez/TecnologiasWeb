@@ -100,7 +100,7 @@ public class LuceneIndexWriter {
             Document doc = new Document();
             contador++;
             for(String field : (Set<String>) object.keySet()){
-                if(field.equals("product/title")||field.equals("review/summary")||field.equals("review/text")){
+                if(field.equals("product/title")||field.equals("review/summary")||field.equals("review/text") ||field.equals("review/score")||field.equals("product/price")){
 //                Class type = object.get(field).getClass();
 //                if(type.equals(String.class)){
 //                    doc.add(new StringField(field, (String)object.get(field), Field.Store.YES));
