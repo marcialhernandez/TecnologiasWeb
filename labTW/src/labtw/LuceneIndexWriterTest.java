@@ -67,33 +67,20 @@ public class LuceneIndexWriterTest {
     }
 
     //@Test
-    public void testQueryLucene() throws IOException, ParseException, org.apache.lucene.queryparser.classic.ParseException {
+    public void testQueryLucene(String textoABuscar,String enField,int cantidadResultados) throws IOException, ParseException, org.apache.lucene.queryparser.classic.ParseException {
         Directory indexDirectory = FSDirectory.open(this.ubicacionIndex);
         IndexReader indexReader = DirectoryReader.open(indexDirectory);
         System.out.println("Verificando existencia de indice");
         IndexSearcher indexSearcher = new IndexSearcher(indexReader);
         //indexSearcher.//setDefaultFieldSortScoring(true, true);
         System.out.println("Verificando querys");
-        
-        //Palabra a buscar ->Para archivo text.txt
-        //String textoSearch = "id2";
-
-        //Palabra a buscar ->Para BD
-        String textoSearch = "Sea";
-        
-        //En este atributo ->Para archivo text.txt
-        //String enAtributo = "name";
-        
-        //En este atributo ->Para BD
-        String enAtributo = "product/title";
-        //String enAtributo = "product/title";
 
         //Creamos la consulta 
-        QueryParser parser = new QueryParser(enAtributo, new StandardAnalyzer());
-        Query query = parser.parse(textoSearch);
+        QueryParser parser = new QueryParser(enField, new StandardAnalyzer());
+        Query query = parser.parse(textoABuscar);
         
         //Realizamos la busqueda
-        TopDocs topBusqueda = indexSearcher.search(query, 10);
+        TopDocs topBusqueda = indexSearcher.search(query, cantidadResultados);
         
         ScoreDoc[] filterScoreDosArray = topBusqueda.scoreDocs;
         

@@ -9,6 +9,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.text.ParseException;
+import java.util.Iterator;
+import java.util.Scanner;
+import java.util.Vector;
 import org.json.simple.JSONArray;
 
 /**
@@ -20,6 +23,7 @@ public class Main {
     /**
      * @param args the command line arguments
      */
+    
     public static void main(String[] args) throws IOException, ParseException, org.apache.lucene.queryparser.classic.ParseException {
         // TODO code application logic here
         
@@ -29,7 +33,19 @@ public class Main {
         File dir = new File(directorioRaiz);
         File[] directoryListing = dir.listFiles();
         LuceneIndexWriter index = null;
-        
+        //banderaCrear indica si hay que crear o no un nuevo indice invertido
+        //En caso que si, es true, en caso que no, es false
+        boolean banderaCrear=true;
+        Vector opcionesCrearIndex = new Vector();
+        opcionesCrearIndex.add("si");
+        opcionesCrearIndex.add("no");
+        menu menuTemp=new menu();
+        if (menuTemp.obtiene(opcionesCrearIndex,"Crear indice invertido? (si/no)").equals("si")){
+            banderaCrear=true;
+        }
+        else{
+            banderaCrear=false;
+        }
         if (directoryListing != null) {
             
             parseJSONFile entradaBD;
@@ -42,9 +58,15 @@ public class Main {
                 documentos = new JSONArray(); 
                 documentos = entradaBD.obtieneDocumentos("/bd/"+child.getName());
                 index = new LuceneIndexWriter(nombreDirSalida,child.getName());
-                index.openIndex();
-                index.addDocuments(documentos);
+                index.openIndex(banderaCrear);
+                if (banderaCrear){
+                    index.addDocuments(documentos);
+                }
                 index.finish();
+                
+                if (banderaCrear==false){
+                    break;
+                }
             }
             
         } else {
@@ -56,10 +78,17 @@ public class Main {
     // directories.
         }
         ////////////////////////////////////////////////////////////////
-        //Test
+        
         LuceneIndexWriterTest indexTest= new LuceneIndexWriterTest(index.file);
-        indexTest.testWriteIndex();
-        indexTest.testQueryLucene();
+        
+        if (menuTemp.obtiene(opcionesCrearIndex,"Ejecutar test de existencia indice invertido? (si/no)").equals("si")){
+            indexTest.testWriteIndex();
+        }
+        
+        if (menuTemp.obtiene(opcionesCrearIndex,"Ejecutar test de busqueda indice invertido? (si/no)").equals("si")){
+            indexTest.testQueryLucene("good","review/text",10);
+        }
+        
     }
 
 }

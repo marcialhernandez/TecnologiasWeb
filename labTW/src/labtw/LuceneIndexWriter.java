@@ -50,7 +50,8 @@ public class LuceneIndexWriter {
         
     };
     
-    public boolean openIndex(){
+    //entrada boleana, True=indica crear, False=No crea, pero verifica si existe
+    public boolean openIndex(boolean indicaCreacion){
         try {
             //salida
             //Path file = Paths.get("src/",this.indexPath);
@@ -59,17 +60,24 @@ public class LuceneIndexWriter {
             Analyzer analyzer = new StopAnalyzer();
             IndexWriterConfig iwc = new IndexWriterConfig(analyzer);
             
+            
+            
             //Verifico si ya existe un indice invertido creado
             //En caso que si, se configura en modo Append
             Directory indexDirectory = FSDirectory.open(this.file);
             if (DirectoryReader.indexExists(indexDirectory)){
-                System.out.println("El indice ya existe, se agregara informacion a este");
-                iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
+                System.out.println("El indice ya existe");
+                if (indicaCreacion){
+                    System.out.println("Se agregara informacion a este");
+                    iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
+                }
             }
             //En caso contrario, se crea uno nuevo
             else{
-            //Always overwrite the directory
-            iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
+                if (indicaCreacion){
+                //Always overwrite the directory
+                    iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
+                }
             }
             
             // Optional: for better indexing performance, if you
