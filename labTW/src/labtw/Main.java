@@ -39,6 +39,10 @@ public class Main {
         Vector opcionesCrearIndex = new Vector();
         opcionesCrearIndex.add("si");
         opcionesCrearIndex.add("no");
+        Vector opcionesFields = new Vector();
+        opcionesFields.add("review/text");
+        opcionesFields.add("product/title");
+        opcionesFields.add("review/summary");
         menu menuTemp=new menu();
         if (menuTemp.obtiene(opcionesCrearIndex,"Crear indice invertido? (si/no)").equals("si")){
             banderaCrear=true;
@@ -88,8 +92,11 @@ public class Main {
             indexTest.testWriteIndex();
         }
         
-        if (menuTemp.obtiene(opcionesCrearIndex,"Ejecutar test de busqueda indice invertido? (si/no)").equals("si")){
-            indexTest.testQueryLucene("good","review/text",10);
+        if (menuTemp.obtiene(opcionesCrearIndex,"Ejecutar busqueda en indice invertido? (si/no)").equals("si")){
+            String fieldABuscar =menuTemp.obtiene(opcionesFields,"Indique field a buscar, opciones:\nreview/text\nproduct/title\nreview/summary");
+            String palabraABuscar=menuTemp.obtieneSimple("Indique que palabra desea buscar:");
+            String cantidadResultadosAMostrar=menuTemp.obtieneNumero("Ingrese la cantidad de resultados que quiere obtener");
+            indexTest.testQueryLucene(palabraABuscar,fieldABuscar,Integer.parseInt(cantidadResultadosAMostrar));
         }
         
     }

@@ -8,6 +8,7 @@ package labtw;
 import java.util.Iterator;
 import java.util.Scanner;
 import java.util.Vector;
+import org.apache.lucene.queryparser.flexible.core.util.StringUtils;
 
 /**
  *
@@ -30,6 +31,7 @@ public class menu {
                 return temp;
             } 
         }
+        
         while (!banderaEntradaCorrecta){
             
             System.out.println("Entrada incorrecta, "+glosa);
@@ -44,5 +46,52 @@ public class menu {
         }
         return temp;
     };
+     
+    public String obtieneSimple(String glosa){
+        Scanner sc = new Scanner(System.in);
+        System.out.println(glosa);
+        String temp= sc.nextLine();
+        return temp;
+    };
     
+    public boolean isInt(String str){
+    if (str == null) {
+            return false;
+    }
+    int length = str.length();
+    if (length == 0) {
+            return false;
+    }
+    int i = 0;
+    if (str.charAt(0) == '-') {
+            if (length == 1) {
+                    return false;
+            }
+            i = 1;
+    }
+    for (; i < length; i++) {
+            char c = str.charAt(i);
+            if (c <= '/' || c >= ':') {
+                    return false;
+            }
+    }
+    return true;
+}
+    
+    public String obtieneNumero(String glosa){
+        Scanner sc = new Scanner(System.in);
+        System.out.println(glosa);
+        String temp= sc.nextLine();
+        boolean banderaNumero=isInt(temp);
+        
+        while (banderaNumero==false){
+            
+            System.out.println("Entrada incorrecta, "+glosa);
+            temp= sc.nextLine();
+            banderaNumero=isInt(temp);
+        }
+       
+        return temp;
+    
+    };
 }

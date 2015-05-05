@@ -9,6 +9,7 @@ package labtw;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.text.ParseException;
+import java.util.HashSet;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 //import static junit.framework.Assert.assertEquals;
 import org.apache.lucene.document.Document;
@@ -16,6 +17,7 @@ import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.sandbox.queries.DuplicateFilter;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
@@ -74,21 +76,30 @@ public class LuceneIndexWriterTest {
         IndexReader indexReader = DirectoryReader.open(indexDirectory);
         System.out.println("Verificando existencia de indice");
         IndexSearcher indexSearcher = new IndexSearcher(indexReader);
+        
         //indexSearcher.//setDefaultFieldSortScoring(true, true);
-        System.out.println("Verificando querys");
+        //System.out.println("Verificando querys");
 
         //Creamos la consulta 
         QueryParser parser = new QueryParser(enField, new StandardAnalyzer());
         Query query = parser.parse(textoABuscar);
         
         //Realizamos la busqueda
-        TopDocs topBusqueda = indexSearcher.search(query, cantidadResultados);
+        DuplicateFilter df=new DuplicateFilter("product/title");
+        //review/text
+        TopDocs topBusqueda = indexSearcher.search(query,df,cantidadResultados);
+        //TopDocs topBusqueda = indexSearcher.search(query,cantidadResultados);
+
+        //DuplicateFilter df=new DuplicateFilter(KEY_FIELD);		
+	//HashSet<String> results=new HashSet<String>();
+	//ScoreDoc[] hits = inde.search(tq,df, 1000).scoreDocs;
         
         ScoreDoc[] filterScoreDosArray = topBusqueda.scoreDocs;
         
         if (filterScoreDosArray.length ==0){
             System.out.println("No existe el termino buscado");
         }
+        
         
         int docId =0;
         for (int i = 0; i < filterScoreDosArray.length; ++i) {
