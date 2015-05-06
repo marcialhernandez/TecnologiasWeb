@@ -100,7 +100,7 @@ public class LuceneIndexWriterTest {
             System.out.println("No existe el termino buscado");
         }
         
-        
+        //lucene collectors, es para gestionar los resultados
         int docId =0;
         for (int i = 0; i < filterScoreDosArray.length; ++i) {
             docId = filterScoreDosArray[i].doc;
