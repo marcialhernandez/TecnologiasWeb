@@ -5,3 +5,5 @@ jsonFile.txt
 labTW/src/moviesIndex
 labTW/src/bd
 BDParserTW/bd
+private.properties
+private.xml
