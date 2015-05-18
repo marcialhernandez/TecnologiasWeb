@@ -57,11 +57,10 @@ public class LuceneIndexWriterTest {
             for ( int i = 0; i < numDocs; i++)
             {
                 Document document = indexReader.document( i);
-                System.out.println( (i) +".- "+document.getField("product/title").toString());
-                System.out.println( document.getField("product/price").toString());
-                System.out.println( document.getField("review/summary").toString());
-                System.out.println( document.getField("review/text").toString());
-                System.out.println( document.getField("review/score").toString());
+                System.out.println( (i) +".- "+document.getField("product/title").toString().substring(24));
+                System.out.println( document.getField("product/price").toString().substring(24));
+                System.out.println( document.getField("review/text").toString().substring(24));
+                System.out.println( document.getField("review/score").toString().substring(52));
                 System.out.println( "*******************************************************************************");
             }
 
@@ -85,10 +84,10 @@ public class LuceneIndexWriterTest {
         Query query = parser.parse(textoABuscar);
         
         //Realizamos la busqueda
-        DuplicateFilter df=new DuplicateFilter("product/title");
+        //DuplicateFilter df=new DuplicateFilter("product/title");
         //review/text
-        TopDocs topBusqueda = indexSearcher.search(query,df,cantidadResultados);
-        //TopDocs topBusqueda = indexSearcher.search(query,cantidadResultados);
+        //TopDocs topBusqueda = indexSearcher.search(query,df,cantidadResultados);
+        TopDocs topBusqueda = indexSearcher.search(query,cantidadResultados);
 
         //DuplicateFilter df=new DuplicateFilter(KEY_FIELD);		
 	//HashSet<String> results=new HashSet<String>();
@@ -105,7 +104,7 @@ public class LuceneIndexWriterTest {
         for (int i = 0; i < filterScoreDosArray.length; ++i) {
             docId = filterScoreDosArray[i].doc;
             Document document = indexReader.document( docId);
-            System.out.println((i + 1) + ".- idDoc: "+docId +" <"+ document.getField("product/title").toString().split(":")[1] +" Score: "+ filterScoreDosArray[i].score);
+            System.out.println((i + 1) + ".- idDoc: "+docId +" <"+ document.getField("product/title").toString().substring(39) +" Score: "+ filterScoreDosArray[i].score);
         }
         
         //Term t = new Term(enAtributo, textoSearch);

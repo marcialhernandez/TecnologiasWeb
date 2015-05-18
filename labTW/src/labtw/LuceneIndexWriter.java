@@ -96,32 +96,68 @@ public class LuceneIndexWriter {
     public void addDocuments(JSONArray jsonObjects){
         System.out.println("Agregando documentos desde: "+this.jsonFilePath);
         int contador=0;
+        String actual = "";
+        String compilado = "";
+        float score = 0; 
+        int cantidad = 0;
+        String price = "";
+        Document doc = new Document();
+        String id = "";
         for(JSONObject object : (List<JSONObject>) jsonObjects){
-            Document doc = new Document();
+            doc = new Document();
             contador++;
-            for(String field : (Set<String>) object.keySet()){
-                if(field.equals("product/title")||field.equals("review/summary")||field.equals("review/text") ||field.equals("review/score")||field.equals("product/price")){
-//                Class type = object.get(field).getClass();
-//                if(type.equals(String.class)){
-//                    doc.add(new StringField(field, (String)object.get(field), Field.Store.YES));
-//                }else if(type.equals(Long.class)){
-//                    //(Long) not (long). Primitives are not castable to Objects
-//                    doc.add(new LongField(field, (Long)object.get(field), Field.Store.YES));
-//                }else if(type.equals(Double.class)){
-//                    doc.add(new DoubleField(field, (Double)object.get(field), Field.Store.YES));
-//                }else if(type.equals(Boolean.class)){
-                    doc.add(new TextField(field, object.get(field).toString(), Field.Store.YES));
-                }
+         //   String anterior = "";
+            if(object.get("product/title").toString().equals(actual)){
+                compilado = compilado +"{{ "+object.get("review/summary").toString().toUpperCase() + " @@ " + object.get("review/text").toString() +" }}";
+                cantidad++;
+                score = valor(score, object.get("review/score").toString(), cantidad);
             }
-            try {
-                //this.indexWriter.updateDocument(true, doc);
-                this.indexWriter.addDocument(doc);
-            } catch (IOException ex) {
-                System.err.println("Error al agregar los documentos de: "+this.jsonFilePath +" | "+  ex.getMessage());
+            else{
+                if(!actual.equals("")){
+                    doc.add(new TextField("product/title", actual, Field.Store.YES));
+                    doc.add(new TextField("review/text", compilado, Field.Store.YES));
+                    doc.add(new StringField("review/score", (score + ""), Field.Store.YES));
+                    doc.add(new TextField("product/price", price, Field.Store.YES));
+                    doc.add(new TextField("product/productId", id, Field.Store.YES));
+                
+                    try {
+                        //this.indexWriter.updateDocument(true, doc);
+                        this.indexWriter.addDocument(doc);
+                    } catch (IOException ex) {
+                        System.err.println("Error al agregar los documentos de: "+this.jsonFilePath +" | "+  ex.getMessage());
+                    }   
+                }
+               
+                actual = object.get("product/title").toString();
+                compilado = "{{ "+object.get("review/summary").toString().toUpperCase() + " @@ " + object.get("review/text").toString() +" }}";        
+                cantidad = 1;
+                price = object.get("product/price").toString();
+                score = valor(0, object.get("review/score").toString(), cantidad);
+                id = object.get("product/productId").toString();
+                
             }
         }
+        
+        doc.add(new TextField("product/title", actual, Field.Store.YES));
+        doc.add(new TextField("review/text", compilado, Field.Store.YES));
+        doc.add(new StringField("review/score", (score + ""), Field.Store.YES));
+        doc.add(new TextField("product/price", price, Field.Store.YES));
+        doc.add(new TextField("product/productId", id, Field.Store.YES));
+
+        try {
+            //this.indexWriter.updateDocument(true, doc);
+            this.indexWriter.addDocument(doc);
+        } catch (IOException ex) {
+            System.err.println("Error al agregar los documentos de: "+this.jsonFilePath +" | "+  ex.getMessage());
+        }   
+        
+        
         System.out.println(contador+" Documentos agregados correctamente desde: " +this.jsonFilePath);
     };
+    
+    public float valor(float anterior, String nuevo, int cantidad){
+        return ((anterior * (cantidad - 1) + Integer.parseInt(nuevo.charAt(0) + "")) / cantidad); 
+    }
 
     public void finish(){
         try {
@@ -130,7 +166,7 @@ public class LuceneIndexWriter {
             this.indexWriter.close();
             System.out.println("Cerrando Indice");
         } catch (IOException ex) {
-            System.err.println("H surgido un problema cerrando el indice desde: "+this.jsonFilePath + " | "+ex.getMessage());
+            System.err.println("Ha surgido un problema cerrando el indice desde: "+this.jsonFilePath + " | "+ex.getMessage());
         }
     };
 }

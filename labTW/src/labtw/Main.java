@@ -42,7 +42,7 @@ public class Main {
         Vector opcionesFields = new Vector();
         opcionesFields.add("review/text");
         opcionesFields.add("product/title");
-        opcionesFields.add("review/summary");
+        //opcionesFields.add("review/summary");
         menu menuTemp=new menu();
         if (menuTemp.obtiene(opcionesCrearIndex,"Crear indice invertido? (si/no)").equals("si")){
             banderaCrear=true;
