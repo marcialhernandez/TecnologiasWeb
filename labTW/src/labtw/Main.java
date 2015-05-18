@@ -93,7 +93,7 @@ public class Main {
         }
         
         if (menuTemp.obtiene(opcionesCrearIndex,"Ejecutar busqueda en indice invertido? (si/no)").equals("si")){
-            String fieldABuscar =menuTemp.obtiene(opcionesFields,"Indique field a buscar, opciones:\nreview/text\nproduct/title\nreview/summary");
+            String fieldABuscar =menuTemp.obtiene(opcionesFields,"Indique field a buscar, opciones:\nproduct/title\nreview/text");
             String palabraABuscar=menuTemp.obtieneSimple("Indique que palabra desea buscar:");
             String cantidadResultadosAMostrar=menuTemp.obtieneNumero("Ingrese la cantidad de resultados que quiere obtener");
             indexTest.testQueryLucene(palabraABuscar,fieldABuscar,Integer.parseInt(cantidadResultadosAMostrar));
