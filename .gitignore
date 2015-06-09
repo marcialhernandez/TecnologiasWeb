@@ -7,3 +7,5 @@ labTW/src/bd
 BDParserTW/bd
 private.properties
 private.xml
+/labTW/nbproject/private/
+/labTW/dist/

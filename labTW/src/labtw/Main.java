@@ -6,6 +6,7 @@
 package labtw;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.text.ParseException;
@@ -24,7 +25,7 @@ public class Main {
      * @param args the command line arguments
      */
     
-    public static void main(String[] args) throws IOException, ParseException, org.apache.lucene.queryparser.classic.ParseException {
+    public static void main(String[] args) throws IOException, ParseException, org.apache.lucene.queryparser.classic.ParseException, FileNotFoundException, ClassNotFoundException {
         // TODO code application logic here
         
         String nombreDirSalida="moviesIndex";
@@ -42,6 +43,16 @@ public class Main {
         Vector opcionesFields = new Vector();
         opcionesFields.add("review/text");
         opcionesFields.add("product/title");
+        malletTrain clasificador=new malletTrain();
+        if (clasificador.loadClassifier()==true){
+                System.out.println("Clasificador cargado con exito");
+                
+            }
+            else{
+                System.out.println("No se ha encontrado el clasificador D:");
+    
+            }
+        clasificador.creaArchivoTemporal("singleInstance"); 
         //opcionesFields.add("review/summary");
         menu menuTemp=new menu();
         if (menuTemp.obtiene(opcionesCrearIndex,"Crear indice invertido? (si/no)").equals("si")){
@@ -67,7 +78,7 @@ public class Main {
                 index = new LuceneIndexWriter(nombreDirSalida,child.getName());
                 index.openIndex(banderaCrear);
                 if (banderaCrear){
-                    index.addDocuments(documentos);
+                    index.addDocuments(documentos,clasificador);
                 }
                 index.finish();
                 

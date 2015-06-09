@@ -10,10 +10,13 @@ package labtw;
  * @author Marcial
  */
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.StopAnalyzer;
@@ -93,7 +96,7 @@ public class LuceneIndexWriter {
         return false;
     };
 
-    public void addDocuments(JSONArray jsonObjects){
+    public void addDocuments(JSONArray jsonObjects,malletTrain clasificador) throws IOException, FileNotFoundException, ClassNotFoundException{
         System.out.println("Agregando documentos desde: "+this.jsonFilePath);
         int contador=0;
         String actual = "";
@@ -103,6 +106,7 @@ public class LuceneIndexWriter {
         String price = "";
         Document doc = new Document();
         String id = "";
+        Map<String, String> clasificacionSingle=new HashMap<String,String>();;    
         for(JSONObject object : (List<JSONObject>) jsonObjects){
             doc = new Document();
             contador++;
@@ -114,14 +118,20 @@ public class LuceneIndexWriter {
             }
             else{
                 if(!actual.equals("")){
+                    //Aqui se tiene que ejecutar el clasificador Mallet
                     doc.add(new TextField("product/title", actual, Field.Store.YES));
                     doc.add(new TextField("review/text", compilado, Field.Store.YES));
                     doc.add(new StringField("review/score", (score + ""), Field.Store.YES));
                     doc.add(new TextField("product/price", price, Field.Store.YES));
                     doc.add(new TextField("product/productId", id, Field.Store.YES));
-                
+                    //Campos de mallet
+                    clasificacionSingle = clasificador.obtieneClasificacionSingle(contador+"", compilado,clasificacionSingle);
+                    doc.add(new StringField("positivo", clasificacionSingle.get("positivo"), Field.Store.YES));
+                    doc.add(new StringField("negativo", clasificacionSingle.get("negativo"), Field.Store.YES));
+                    doc.add(new StringField("neutral", clasificacionSingle.get("neutral"), Field.Store.YES));
                     try {
                         //this.indexWriter.updateDocument(true, doc);
+                        
                         this.indexWriter.addDocument(doc);
                     } catch (IOException ex) {
                         System.err.println("Error al agregar los documentos de: "+this.jsonFilePath +" | "+  ex.getMessage());
@@ -137,12 +147,17 @@ public class LuceneIndexWriter {
                 
             }
         }
-        
+        //Aqui se tiene que ejecutar el clasificador Mallet
+        clasificacionSingle=clasificador.obtieneClasificacionSingle(contador+"", compilado,clasificacionSingle);
         doc.add(new TextField("product/title", actual, Field.Store.YES));
         doc.add(new TextField("review/text", compilado, Field.Store.YES));
         doc.add(new StringField("review/score", (score + ""), Field.Store.YES));
         doc.add(new TextField("product/price", price, Field.Store.YES));
         doc.add(new TextField("product/productId", id, Field.Store.YES));
+         //Campos de mallet
+        doc.add(new StringField("positivo", clasificacionSingle.get("positivo"), Field.Store.YES));
+        doc.add(new StringField("negativo", clasificacionSingle.get("negativo"), Field.Store.YES));
+        doc.add(new StringField("neutral", clasificacionSingle.get("neutral"), Field.Store.YES));
 
         try {
             //this.indexWriter.updateDocument(true, doc);

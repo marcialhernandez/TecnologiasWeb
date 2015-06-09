@@ -61,6 +61,25 @@ public class LuceneIndexWriterTest {
                 System.out.println( document.getField("product/price").toString().substring(24));
                 System.out.println( document.getField("review/text").toString().substring(24));
                 System.out.println( document.getField("review/score").toString().substring(52));
+                //Campos mallet
+                try{
+                    System.out.println( document.getField("positivo").toString().substring(52));
+
+                } catch(Exception e){
+                    System.out.println("<positivo:N/A>");
+                }
+                try{
+                    System.out.println( document.getField("negativo").toString().substring(52));
+
+                } catch(Exception e){
+                    System.out.println("<negativo:N/A>");
+                }   
+                try{
+                    System.out.println( document.getField("neutral").toString().substring(52));
+
+                } catch(Exception e){
+                    System.out.println("<neutral:N/A>");
+                }                
                 System.out.println( "*******************************************************************************");
             }
 
