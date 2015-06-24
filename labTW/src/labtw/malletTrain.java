@@ -15,6 +15,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -217,4 +218,110 @@ public class malletTrain {
         return clasificacionSingle;
     }
     
+        public Map<String, Float> obtieneClasificacionSingle2(String id, String contenidoCampo,Map<String, Float> clasificacionSingle) throws IOException {
+           //x es el campo, en este caso es ignorado ya que clasifica segun los tipos que 
+           //trae el clasificador de entrada
+            //
+           //Map<String, String> clasificacionSingle = new HashMap<String,String>();
+           String singleData;
+        singleData = id+" x "+contenidoCampo;
+        FileWriter fWriter = new FileWriter(this.tempFile,true) ;
+            fWriter.write(singleData);
+            fWriter.flush();
+            
+        
+        // Create a new iterator that will read raw instance data from                                     
+        //  the lines of a file.                                                                           
+        // Lines should be formatted as:                                                                   
+        //                                                                                                 
+        //   [name] [label] [data ... ]                                                                    
+        //                                                                                                 
+        //  in this case, "label" is ignored. 
+
+        CsvIterator reader =
+            new CsvIterator(new FileReader(tempFile),
+                            "(\\w+)\\s+(\\w+)\\s+(.*)",
+                            3, 2, 1);  // (data, label, name) field indices  
+        
+        fWriter.close();
+        
+        // Create an iterator that will pass each instance through                                         
+        //  the same pipe that was used to create the training data                                        
+        //  for the classifier.                                                                            
+        Iterator instances =this.clasificador.getInstancePipe().newIteratorFrom(reader);
+
+        // Classifier.classify() returns a Classification object                                           
+        //  that includes the instance, the classifier, and the                                            
+        //  classification results (the labeling). Here we only                                            
+        //  care about the Labeling.                                                                       
+        while (instances.hasNext()) {
+            Labeling labeling = this.clasificador.classify(instances.next()).getLabeling();
+
+            // print the labels with their weights in descending order (ie best first)                     
+            
+            //El campo x es agregado como un nuevo tipo de campo, pero este no es util
+            //Por ello se ignora
+
+            for (int rank = 0; rank < labeling.numLocations(); rank++){
+                if (!"x".equals(labeling.getLabelAtRank(rank)+"")){
+                    clasificacionSingle.put(labeling.getLabelAtRank(rank)+"", (float)labeling.getValueAtRank(rank));
+                }
+            }
+        }
+        return clasificacionSingle;
+    }
+    
+    public Map<String, Float> obtieneClasificacionSingle3(String id, String contenidoCampo,Map<String, Float> clasificacionSingle) throws IOException {
+           //x es el campo, en este caso es ignorado ya que clasifica segun los tipos que 
+           //trae el clasificador de entrada
+            //
+           //Map<String, String> clasificacionSingle = new HashMap<String,String>();
+        //   String singleData;
+        String singleData = id+" x "+contenidoCampo;
+        //FileWriter fWriter = new FileWriter(this.tempFile,true) ;
+         //   fWriter.write(singleData);
+          //  fWriter.flush();
+            
+        
+        // Create a new iterator that will read raw instance data from                                     
+        //  the lines of a file.                                                                           
+        // Lines should be formatted as:                                                                   
+        //                                                                                                 
+        //   [name] [label] [data ... ]                                                                    
+        //                                                                                                 
+        //  in this case, "label" is ignored. 
+
+        CsvIterator reader =
+            new CsvIterator(new StringReader(singleData),
+                            "(\\w+)\\s+(\\w+)\\s+(.*)",
+                            3, 2, 1);  // (data, label, name) field indices  
+        
+        //fWriter.close();
+        
+        // Create an iterator that will pass each instance through                                         
+        //  the same pipe that was used to create the training data                                        
+        //  for the classifier.                                                                            
+        Iterator instances =this.clasificador.getInstancePipe().newIteratorFrom(reader);
+
+        // Classifier.classify() returns a Classification object                                           
+        //  that includes the instance, the classifier, and the                                            
+        //  classification results (the labeling). Here we only                                            
+        //  care about the Labeling.                                                                       
+        while (instances.hasNext()) {
+            Labeling labeling = this.clasificador.classify(instances.next()).getLabeling();
+
+            // print the labels with their weights in descending order (ie best first)                     
+            
+            //El campo x es agregado como un nuevo tipo de campo, pero este no es util
+            //Por ello se ignora
+
+            for (int rank = 0; rank < labeling.numLocations(); rank++){
+                if (!"x".equals(labeling.getLabelAtRank(rank)+"")){
+                    clasificacionSingle.put(labeling.getLabelAtRank(rank)+"", (float)labeling.getValueAtRank(rank));
+                }
+            }
+        }
+        return clasificacionSingle;
+    }
+        
 }

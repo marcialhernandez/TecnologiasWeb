@@ -9,23 +9,18 @@ package labtw;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.text.ParseException;
-import java.util.HashSet;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 //import static junit.framework.Assert.assertEquals;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.QueryParser;
-import org.apache.lucene.sandbox.queries.DuplicateFilter;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
-import static sun.nio.cs.Surrogate.is;
 //import org.junit.Test;
 
 /**
@@ -56,30 +51,12 @@ public class LuceneIndexWriterTest {
             System.out.println("Imprimiendo documentos almacenados\n");
             for ( int i = 0; i < numDocs; i++)
             {
-                Document document = indexReader.document( i);
+                Document document = indexReader.document(i);
                 System.out.println( (i) +".- "+document.getField("product/title").toString().substring(24));
                 System.out.println( document.getField("product/price").toString().substring(24));
                 System.out.println( document.getField("review/text").toString().substring(24));
-                System.out.println( document.getField("review/score").toString().substring(52));
-                //Campos mallet
-                try{
-                    System.out.println( document.getField("positivo").toString().substring(52));
-
-                } catch(Exception e){
-                    System.out.println("<positivo:N/A>");
-                }
-                try{
-                    System.out.println( document.getField("negativo").toString().substring(52));
-
-                } catch(Exception e){
-                    System.out.println("<negativo:N/A>");
-                }   
-                try{
-                    System.out.println( document.getField("neutral").toString().substring(52));
-
-                } catch(Exception e){
-                    System.out.println("<neutral:N/A>");
-                }                
+                System.out.println( document.getField("review/score").toString().substring(20));
+                System.out.println( document.getField("cantidadReviews").toString().substring(69));
                 System.out.println( "*******************************************************************************");
             }
 
@@ -92,6 +69,7 @@ public class LuceneIndexWriterTest {
     public void testQueryLucene(String textoABuscar,String enField,int cantidadResultados) throws IOException, ParseException, org.apache.lucene.queryparser.classic.ParseException {
         Directory indexDirectory = FSDirectory.open(this.ubicacionIndex);
         IndexReader indexReader = DirectoryReader.open(indexDirectory);
+        System.out.println("Debug 6 = "+indexReader.toString());
         System.out.println("Verificando existencia de indice");
         IndexSearcher indexSearcher = new IndexSearcher(indexReader);
         
